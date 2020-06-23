@@ -12,6 +12,16 @@ spec:
       value: "hello hi"
 
   templates:
+  - name: hello-i18n
+    steps:
+    - - name: say-hello-localized
+        template: say-hello
+        arguments:
+          parameters:
+          - name: message
+            value: "hello"
+          
+
   - name: say-hello
     container:
       image: docker/whalesay
