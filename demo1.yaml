@@ -6,35 +6,25 @@ metadata:
 spec:
   entrypoint: hello-i18n
 
-  arguments:
-    parameters:
-    - name: message
-      value: "hello hi"
-
   templates:
   - name: hello-i18n
     steps:
-    - - name: greet-en
+    - - name: greet
         template: say-hello
         arguments:
           parameters:
           - name: message
-            value: "hello"
-          
-      - name: greet-fr
-        template: say-hello
-        arguments:
-          parameters:
-          - name: message
-            value: "bonjour"
-
-      - name: greet-es
-        template: say-hello
-        arguments:
-          parameters:
-          - name: message
-            value: "hola"
-
+            value: "{{item}}"
+        withItems:
+          - hello
+          - bonjour
+          - hallo
+          - zdravo
+          - merhaba
+          - привет
+          - سلام
+          - 你好
+          - हैलो
 
   - name: say-hello
     inputs:
@@ -44,4 +34,3 @@ spec:
       image: alpine
       command: [ "echo" ]
       args: [ "{{inputs.parameters.message}}" ]
-   
