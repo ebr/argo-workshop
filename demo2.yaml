@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: script-
+
+spec:
+  entrypoint: get-joke
+
+  templates:
+  - name: get-joke
+    script:
+      image: python
+      command: [ "python" ]
+      source: |
+        import json
+        from urllib import request
+
+        r = request.urlopen("https://api.icndb.com/jokes/random?limitTo=[nerdy]")
+        j = json.load(r)
+
+        print(j['value']['joke']) 
