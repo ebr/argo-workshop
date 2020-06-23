@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: hello-
+
+spec:
+  entrypoint: say-hello
+
+  templates:
+  - name: say-hello
+    container:
+      image: alpine
+      command: [ "echo" ]
+      args: ["hello argo"]
