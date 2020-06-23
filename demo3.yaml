@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: fun-with-lists-
+spec:
+  entrypoint: ep
+
+  arguments:
+    parameters:
+    - name: count
+      value: 1
+
+  templates:
+
+  # Entrypoint template - calls other templates
+  - name: ep
+    steps:
+    - - name: get-filenames
+        template: filelist
+        arguments:
+          parameters:
+            - name: count
+              value: "{{workflow.parameters.count}}"
+
+    - - name: encode-filenames
+        template: encode
+        arguments:
+          parameters:
+            - name: workitem
+              value: "{{item}}"
+        withParam: "{{steps.get-filenames.outputs.result}}"
+
+  # Generates a list of filenames
+  - name: filelist
+    inputs:
+      parameters:
+      - name: count
+    script:
+      image: library/python:3-alpine
+      command: [python]
+      source: |
+        import json
+        r = [f"{str(i).rjust(7,'0')}.csv" for i in range(1, int("{{inputs.parameters.count}}")+1)]
+        print(json.dumps(r))
+
+
+  # Base64-encodes given input
+  - name: encode
+    inputs:
+      parameters:
+        - name: workitem
+    script:
+      image: library/python:3-alpine
+      command: [python]
+      source: |
+        import time
+        import random
+        from base64 import b64encode
+
+        print("Now processing {{inputs.parameters.workitem}}")
+
+        n = random.randint(0,8)
+
+        print(f"sleeping for {n}")
+        time.sleep(n)
+
+        print(b64encode(b"{{inputs.parameters.workitem}}"))
