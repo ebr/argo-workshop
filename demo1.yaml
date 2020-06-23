@@ -6,9 +6,14 @@ metadata:
 spec:
   entrypoint: say-hello
 
+  arguments:
+    parameters:
+    - name: message
+      value: "hello hi"
+
   templates:
   - name: say-hello
     container:
-      image: alpine
-      command: [ "echo" ]
-      args: ["hello argo"]
+      image: docker/whalesay
+      command: [ "cowsay" ]
+      args: [ "{{workflow.parameters.message}}" ]
