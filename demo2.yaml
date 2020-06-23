@@ -5,6 +5,12 @@ metadata:
 
 spec:
   entrypoint: get-joke
+  arguments:
+    parameters:
+    - name: firstname
+      value: Bruce
+    - name: lastname
+      value: Lee
 
   templates:
   - name: get-joke
@@ -15,7 +21,7 @@ spec:
         import json
         from urllib import request
 
-        r = request.urlopen("https://api.icndb.com/jokes/random?limitTo=[nerdy]")
-        j = json.load(r)
+        r = request.urlopen("https://api.icndb.com/jokes/random?limitTo=[nerdy]&firstName={{workflow.parameters.firstname}}&lastName={{workflow.parameters.lastname}}")
 
+        j = json.load(r)
         print(j['value']['joke']) 
