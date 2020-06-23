@@ -4,7 +4,7 @@ metadata:
   generateName: hello-
 
 spec:
-  entrypoint: say-hello
+  entrypoint: hello-i18n
 
   arguments:
     parameters:
@@ -14,16 +14,34 @@ spec:
   templates:
   - name: hello-i18n
     steps:
-    - - name: say-hello-localized
+    - - name: greet-en
         template: say-hello
         arguments:
           parameters:
           - name: message
             value: "hello"
           
+      - name: greet-fr
+        template: say-hello
+        arguments:
+          parameters:
+          - name: message
+            value: "bonjour"
+
+      - name: greet-es
+        template: say-hello
+        arguments:
+          parameters:
+          - name: message
+            value: "hola"
+
 
   - name: say-hello
+    inputs:
+      parameters:
+      - name: message
     container:
-      image: docker/whalesay
-      command: [ "cowsay" ]
-      args: [ "{{workflow.parameters.message}}" ]
+      image: alpine
+      command: [ "echo" ]
+      args: [ "{{inputs.parameters.message}}" ]
+   
