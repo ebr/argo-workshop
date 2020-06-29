@@ -3,6 +3,7 @@ kind: Workflow
 metadata:
   generateName: fun-with-lists-
 spec:
+  parallelism: 10
   entrypoint: ep
 
   arguments:
@@ -46,6 +47,13 @@ spec:
 
   # Base64-encodes given input
   - name: encode
+    retryStrategy:
+      limit: 2
+      retryPolicy: OnFailure
+      backoff:
+        duration: "1"
+        factor: 1
+        maxDuration: "1m"
     inputs:
       parameters:
         - name: workitem
@@ -60,6 +68,8 @@ spec:
         print("Now processing {{inputs.parameters.workitem}}")
 
         n = random.randint(0,8)
+        if n > 2:
+          raise RuntimeError
 
         print(f"sleeping for {n}")
         time.sleep(n)
